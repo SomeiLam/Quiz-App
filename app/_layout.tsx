@@ -1,39 +1,46 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { store } from '@/src/redux/store';
+import MaterialCommunityIcons from '@expo/vector-icons/build/MaterialCommunityIcons';
+import { Tabs } from 'expo-router';
+import { Provider } from 'react-redux';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Provider store={store}>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarLabelStyle: { fontSize: 16 },
+          tabBarLabelPosition: 'beside-icon',
+          tabBarActiveTintColor: '#1ea9e9',
+        }}
+      >
+        <Tabs.Screen
+          name="index" // Points to app/(tabs)/index.tsx (Quiz tab)
+          options={{
+            title: 'Quiz',
+            tabBarIcon: ({ color, focused }) => (
+              <MaterialCommunityIcons
+                name={focused ? 'comment-question' : 'comment-question-outline'}
+                color={color}
+                size={24}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="category" // Points to app/(tabs)/category.tsx (Category tab)
+          options={{
+            title: 'Category',
+            tabBarIcon: ({ color, focused }) => (
+              <MaterialCommunityIcons
+                name={focused ? 'book-open' : 'book-open-outline'}
+                color={color}
+                size={24}
+              />
+            ),
+          }}
+        />
+      </Tabs>
+    </Provider>
   );
 }
