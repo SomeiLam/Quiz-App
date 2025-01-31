@@ -69,7 +69,9 @@ const Quiz = () => {
                     <Text style={styles.buttonText}>{option.explanation}</Text>
                     {selectedAnswer.correctAnswer && (
                       <Button
-                        onPress={() => dispatch(nextQuestion())}
+                        onPress={() => {
+                          dispatch(nextQuestion());
+                        }}
                         title={
                           currentQuestionIndex === questions.length - 1
                             ? 'Go To Quiz Summary'

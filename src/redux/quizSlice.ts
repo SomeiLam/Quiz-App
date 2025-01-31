@@ -45,6 +45,7 @@ export const quizSlice = createSlice({
         allQuestions.find((field) => field.field === action.payload)
           ?.questions || [];
       state.questions = shuffleQuestionsAndOptions(fieldQuestions);
+      state.currentQuestionIndex = 0;
     },
     answerQuestion: (state, action) => {
       const { answer } = action.payload;
@@ -61,6 +62,9 @@ export const quizSlice = createSlice({
     resetQuiz: (state) => {
       state.currentQuestionIndex = 0;
     },
+    viewSummary: (state) => {
+      state.currentQuestionIndex = state.questions.length;
+    },
   },
 });
 
@@ -71,6 +75,7 @@ export const {
   nextQuestion,
   previousQuestion,
   resetQuiz,
+  viewSummary,
 } = quizSlice.actions;
 // export const quiz = (state: RootState) => state.quiz;
 

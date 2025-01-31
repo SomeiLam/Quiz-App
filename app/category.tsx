@@ -6,9 +6,10 @@ import {
   Platform,
   Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import allQuestions from '@/src/quizQuestions';
-import { changeField } from '../src/redux/quizSlice';
+import { changeField, viewSummary } from '../src/redux/quizSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
@@ -25,17 +26,31 @@ export default function Category() {
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {allQuestions.map((item) => (
-          <TouchableOpacity
-            key={item.field}
-            style={styles.item}
-            onPress={() => {
-              dispatch(changeField(item.field));
-              router.push('/');
-            }}
-          >
-            <Text style={styles.nameText}>{item.field}</Text>
-            <Text style={styles.typeText}>({item.type})</Text>
-          </TouchableOpacity>
+          <View style={styles.card} key={item.field}>
+            <Text style={styles.nameText}>
+              {item.field} ({item.type})
+            </Text>
+
+            <View style={styles.actionContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  dispatch(changeField(item.field));
+                  router.push('/');
+                }}
+              >
+                <Text style={styles.start}>Start Quiz</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  dispatch(changeField(item.field));
+                  dispatch(viewSummary());
+                  router.push('/');
+                }}
+              >
+                <Text style={styles.start}>View Summary</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         ))}
       </ScrollView>
     </ImageBackground>
@@ -55,26 +70,42 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around', // Space items evenly
     gap: 10,
   },
-  item: {
+  card: {
     backgroundColor: '#2979aa58',
     borderColor: '#59a6cd79',
     borderWidth: 1,
     borderRadius: 10,
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    margin: 5,
-    height: 100, // Adjust item height as needed
-    // Dynamic width based on platform
+    justifyContent: 'space-evenly',
+    height: 200,
     width: 300,
+    margin: 5,
+    gap: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   nameText: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginLeft: 5,
+    marginRight: 5,
   },
   typeText: {
     color: '#fff',
     fontSize: 16,
+  },
+  actionContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 20,
+  },
+  start: {
+    color: '#125783',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
